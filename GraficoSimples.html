@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas Chart Demo</title>
+    <script type="text/javascript">
+
+		var serie = new Array(POINTS);
+
+		//$(document).ready(function () {
+
+			var POINTS = 400*1000;
+			var step = Math.PI/180;
+
+			console.time('Serie');
+			for (var i=0; i<POINTS; i++) {
+				serie[i] = {x: i, y: step*i};
+			}
+			console.timeEnd('Serie');
+
+//			var dataDef = {
+//				title: "Plotando 400 mil pontos",
+//				xLabel: 'sin(x)', 
+//				yLabel: 'x',
+//				labelFont: '19pt Arial', 
+//				dataPointFont: '10pt Arial',
+//				renderTypes: [CanvasChart.renderType.lines, CanvasChart.renderType.points],
+//				dataPoints: serie
+//			}
+//
+//			console.time('Render');
+//
+//            CanvasChart.render('canvas', dataDef);
+//
+//			console.timeEnd('Render');
+
+        //});
+
+    </script>
+</head>
+<body style="margin-left:50px;margin-top:50px;">
+    <canvas id="canvas" width="800" height="600"></canvas>
+</body>
+</html>
