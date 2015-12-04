@@ -4,40 +4,96 @@
     <title>Canvas Chart Demo</title>
     <script type="text/javascript">
 
-		var serie = new Array(POINTS);
+		// wait until page is fully loaded to run app
+		window.onload = canvasApp;
 
-		//$(document).ready(function () {
+		// redraw canvas when window is resized
+		window.onresize = canvasApp;
 
-			var POINTS = 400*1000;
-			var step = Math.PI/180;
 
-			console.time('Serie');
-			for (var i=0; i<POINTS; i++) {
-				serie[i] = {x: i, y: step*i};
+		// app's main function
+		function canvasApp() {
+
+			//------------------------------
+			// CREATE SINUSOID
+			//------------------------------
+			console.time('Time for series creation');
+			var POINTS = 100 * 1000;
+			var margin = {left: 10, top: 10, right: 40, bottom: 40};
+			var degree = Math.PI/180;
+			var series = new Float32Array(POINTS);
+			for (var i = 0; i < POINTS; i++) {
+				series[i] = Math.sin(i * degree);
 			}
-			console.timeEnd('Serie');
+			console.timeEnd('Time for series creation');
 
-//			var dataDef = {
-//				title: "Plotando 400 mil pontos",
-//				xLabel: 'sin(x)', 
-//				yLabel: 'x',
-//				labelFont: '19pt Arial', 
-//				dataPointFont: '10pt Arial',
-//				renderTypes: [CanvasChart.renderType.lines, CanvasChart.renderType.points],
-//				dataPoints: serie
-//			}
-//
-//			console.time('Render');
-//
-//            CanvasChart.render('canvas', dataDef);
-//
-//			console.timeEnd('Render');
 
-        //});
+			//------------------------------
+			// PREPARE CANVAS
+			//------------------------------
+			console.time('Time to resize canvas');
+			resizeCanvas();
+			console.timeEnd('Time to resize canvas');
+
+
+			//------------------------------
+			// RENDER SINUSOID CHART
+			//------------------------------
+			console.time('Time for rendering chart');
+
+			// get canvas context and its properties
+			var canvas = document.getElementById("canvas");
+			var width = canvas.getAttribute('width');
+			var height = canvas.getAttribute('height');
+			var maxWidth = (width-margin.left-margin.right);
+			var maxHeight = (height-margin.top-margin.bottom);
+			var context = canvas.getContext("2d");
+			context.fillStyle = 'black';
+
+//			// render chart's background
+//			context.fillStyle = "#fffffa";
+//			context.fillRect(0, 0, maxWidth, maxHeight);
+//
+//			// draw vertical and horizontal axis
+//			drawLine(context, margin.left, margin.left, margin.bottom, maxHeight);
+//			drawLine(context, margin.left, margin.top + maxHeight, margin.left + maxWidth, margin.top + maxHeight);
+
+			// draw points
+			var ratioY = maxHeight/2;
+			var ratioX = maxWidth/POINTS;
+			for (var i=0; i < POINTS; i++) {
+				drawPoint(context, margin.left + i * ratioX, margin.top + ratioY*(1+series[i]));
+			}
+
+			console.timeEnd('Time for rendering chart');
+		}
+		
+
+		// helper function to draw lines
+		function drawLine(context, startX, startY, endX, endY) {
+			context.strokeStyle = 'black';
+			context.beginPath();
+			context.moveTo(startX, startY);
+			context.lineTo(endX, endY);
+			context.stroke();
+			context.closePath();
+		};
+
+		// helper function to draw points
+		function drawPoint(context, screenX, screenY) {
+			//context.arc(screenX, screenY, 2, 0, 2 * Math.PI, false)
+			context.fillRect(screenX, screenY, 1, 1);
+		};
+
+		// helper function to resize canvas
+		function resizeCanvas() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		}
 
     </script>
 </head>
-<body style="margin-left:50px;margin-top:50px;">
-    <canvas id="canvas" width="800" height="600"></canvas>
+<body>
+    <canvas id="canvas"></canvas>
 </body>
 </html>
